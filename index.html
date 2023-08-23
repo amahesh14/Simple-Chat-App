@@ -109,12 +109,24 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
-        const socket = io(); // Connect to the server
-    
+        const socket = io();
+        
+        const emojiMap = {
+        "react": "⚛️",
+        "woah": "😯",
+        "hey": "👋",
+        "lol": "😂",
+        "like": "❤️",
+        "congratulations": "🎉",
+    };
+
         document.querySelector('.send-button').addEventListener('click', () => {
             const messageInput = document.querySelector('input[type="text"]');
-            const message = messageInput.value.trim();
-            
+            let message = messageInput.value.trim();
+            for (const [word, emoji] of Object.entries(emojiMap)) {
+            const regex = new RegExp(word, 'g');
+            message = message.replace(regex, emoji);
+        }
             if (message !== '') {
                 socket.emit('message', { content: message });
                 messageInput.value = '';
@@ -127,7 +139,7 @@
             messageDiv.className = 'message sender';
             messageDiv.textContent = data.content;
             chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the latest message
+            chatBox.scrollTop = chatBox.scrollHeight; 
         });
     </script>
     
